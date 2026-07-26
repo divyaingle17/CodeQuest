@@ -4,12 +4,12 @@ import DailyStreakModal from './DailyStreakModal';
 import AuthModal from './AuthModal';
 import { 
   Code2, Flame, Coins, Trophy, BookOpen, Swords, BarChart3, User, 
-  Sparkles, Sun, Moon, Menu, X, LogIn, LogOut, Shield 
+  Sparkles, Menu, X, LogIn, LogOut, Shield 
 } from 'lucide-react';
 
 export default function Navbar() {
   const { 
-    activeTab, setActiveTab, userProfile, theme, toggleTheme,
+    activeTab, setActiveTab, userProfile,
     currentUser, setShowAuthModal, setAuthMode, handleLogout 
   } = useApp();
 
@@ -81,23 +81,9 @@ export default function Navbar() {
             </nav>
           </div>
 
-          {/* Right Stats, Auth & Theme Controls */}
+          {/* Right Stats & Auth Controls */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
             
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-cyan-500/50 transition-all duration-300 flex items-center justify-center group shadow-sm"
-              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-              aria-label="Toggle theme"
-            >
-              {theme === 'light' ? (
-                <Sun className="w-4 h-4 text-amber-500 fill-amber-500/20 group-hover:rotate-45 transition-transform duration-300" />
-              ) : (
-                <Moon className="w-4 h-4 text-cyan-400 fill-cyan-400/20 group-hover:-rotate-12 transition-transform duration-300" />
-              )}
-            </button>
-
             {/* Streak Counter */}
             <button
               onClick={() => setShowStreakModal(true)}

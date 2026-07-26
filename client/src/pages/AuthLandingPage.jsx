@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
   Sparkles, LogIn, UserPlus, Shield, Mail, Lock, User, AlertCircle, 
-  CheckCircle2, Flame, Trophy, Zap, BookOpen, Sun, Moon 
+  CheckCircle2, Flame, Trophy, Zap, BookOpen 
 } from 'lucide-react';
 
 export default function AuthLandingPage() {
-  const { handleLogin, handleRegister, theme, toggleTheme } = useApp();
+  const { handleLogin, handleRegister } = useApp();
 
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [email, setEmail] = useState('');
@@ -67,19 +67,6 @@ export default function AuthLandingPage() {
             <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider uppercase">Master Aptitude & Coding</span>
           </div>
         </div>
-
-        {/* Theme Switcher */}
-        <button
-          onClick={toggleTheme}
-          className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-cyan-500/50 shadow-sm transition"
-          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-        >
-          {theme === 'light' ? (
-            <Sun className="w-4 h-4 text-amber-500 fill-amber-500/20" />
-          ) : (
-            <Moon className="w-4 h-4 text-cyan-400 fill-cyan-400/20" />
-          )}
-        </button>
       </header>
 
       {/* Main Landing & Auth Gateway Container */}
