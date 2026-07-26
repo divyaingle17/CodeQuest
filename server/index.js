@@ -44,58 +44,68 @@ const users = [
 
 // Register New User
 app.post('/api/auth/register', (req, res) => {
-  const { email, password, username, role } = req.body;
+  try {
+    const { email, password, username, role } = req.body;
 
-  if (!email || !password || !username) {
-    return res.status(400).json({ error: "Email, password, and username are required." });
+    if (!email || !password || !username) {
+      return res.status(400).json({ error: "Email, password, and username are required." });
+    }
+
+    const existingUser = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+    if (existingUser) {
+      return res.status(400).json({ error: "An account with this email already exists." });
+    }
+
+    const newUser = {
+      id: users.length + 1,
+      email: email.trim(),
+      password: password.trim(),
+      username: username.trim(),
+      role: role || 'user',
+      rating: 1500,
+      solvedCount: 0,
+      coins: 100,
+      streakDays: 1,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    users.push(newUser);
+
+    // Return user session object (without password)
+    const { password: _, ...userSession } = newUser;
+    return res.json({
+      message: "Registration successful!",
+      user: userSession
+    });
+  } catch (err) {
+    console.error("Register Error:", err);
+    return res.status(500).json({ error: "Server error during registration. Please try again." });
   }
-
-  const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (existingUser) {
-    return res.status(400).json({ error: "An account with this email already exists." });
-  }
-
-  const newUser = {
-    id: users.length + 1,
-    email: email.trim(),
-    password: password.trim(),
-    username: username.trim(),
-    role: role || 'user',
-    rating: 1500,
-    solvedCount: 0,
-    coins: 100,
-    streakDays: 1,
-    createdAt: new Date().toISOString().split('T')[0]
-  };
-
-  users.push(newUser);
-
-  // Return user session object (without password)
-  const { password: _, ...userSession } = newUser;
-  res.json({
-    message: "Registration successful!",
-    user: userSession
-  });
 });
 
 // Login User
 app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Please enter both email and password." });
+    if (!email || !password) {
+      return res.status(400).json({ error: "Please enter both email and password." });
+    }
+
+    const user = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+    if (!user || user.password !== password.trim()) {
+      return res.status(401).json({ error: "Invalid email or password." });
+    }
+
+    const { password: _, ...userSession } = user;
+    return res.json({
+      message: "Login successful!",
+      user: userSession
+    });
+  } catch (err) {
+    console.error("Login Error:", err);
+    return res.status(500).json({ error: "Server error during login. Please try again." });
   }
-
-  const user = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
-  if (!user || user.password !== password.trim()) {
-    return res.status(401).json({ error: "Invalid email or password." });
-  }
-
-  const { password: _, ...userSession } = user;
-  res.json({
-    message: "Login successful!",
-    user: userSession
-  });
 });
 
 // --- ADMIN ENDPOINTS ---
@@ -278,7 +288,7 @@ app.get('/api/user/profile', (req, res) => {
 // Export Express App for Vercel Serverless Deployments
 module.exports = app;
 
-if (process.env.NODE_ENV !== 'production' || require.main === module) {
+if (!process.env.VERCEL && (require.main === module || process.env.NODE_ENV !== 'production')) {
   const server = app.listen(PORT, () => {
     console.log(`🚀 CodeQuest Server listening on port ${PORT}`);
   });
@@ -286,7 +296,6 @@ if (process.env.NODE_ENV !== 'production' || require.main === module) {
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
       console.error(`❌ Port ${PORT} is already in use by another process.`);
-      console.error(`💡 Fix: Run 'npx kill-port ${PORT}' or 'fuser -k ${PORT}/tcp' then restart the server.`);
       process.exit(1);
     } else {
       console.error(`Server error:`, err);
