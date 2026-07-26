@@ -122,7 +122,7 @@ JWT_SECRET=your_secret_key
 Divya Ingle
 
 GitHub:
-https://github.com/YOUR_USERNAME
+https://github.com/divyaingle17
 
 LinkedIn:
-https://linkedin.com/in/YOUR_LINKEDIN
+https://www.linkedin.com/in/divya-ingle-9b78b428b/
